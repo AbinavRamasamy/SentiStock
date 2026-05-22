@@ -16,9 +16,16 @@ def analyze_stock(request):
         if not news_list:
             return Response({"error": "No news found for this ticker"}, status=404)
         
-        headlines = [news['content']['title'] for news in news_list if 'content' in news and 'title' in news['content']]
+        articles = [
+            {
+                "title": news['content']['title'],
+                "url": news['content'].get('canonicalUrl', {}).get('url', ''),
+            }
+            for news in news_list if 'content' in news and 'title' in news['content']
+        ]
 
-        compound_scores = [analyzer.polarity_scores(headline)['compound'] for headline in headlines]
+        headlines = [a['title'] for a in articles]
+        compound_scores = [analyzer.polarity_scores(h)['compound'] for h in headlines]
         avg_score = (sum(compound_scores) / len(compound_scores)) if compound_scores else 0
         label = "positive" if avg_score > 0.05 else "negative" if avg_score < -0.05 else "neutral"
 
@@ -26,7 +33,7 @@ def analyze_stock(request):
             "ticker": ticker_symbol,
             "average_sentiment": avg_score,
             "sentiment_label": label,
-            "recent_headlines": headlines[:10]
+            "recent_headlines": articles[:10],
         })
     except Exception as e:
         return Response({"error": str(e)}, status=500)
