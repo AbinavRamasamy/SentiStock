@@ -1,0 +1,5 @@
+django==6.0.5
+djangorestframework==3.17.1
+django-cors-headers==4.9.0
+vaderSentiment==3.3.2
+yfinance==1.4.0
