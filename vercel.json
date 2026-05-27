@@ -8,13 +8,7 @@
         "backend": {
             "root": "backend",
             "routePrefix": "/_/backend",
-            "framework": null,
-            "builds": [
-                {
-                    "src": "core/wsgi.py",
-                    "use": "@vercel/python"
-                }
-            ]
+            "entrypoint": "core/wsgi.py"
         }
     }
 }
